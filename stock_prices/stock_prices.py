@@ -25,36 +25,86 @@ def find_max_profit_skip(prices):
     return max_profit
 
 
-# first_test = """
-# def find_max_profit(prices):
-#     max_profit = -float('inf')
-#     for i in range(len(prices) - 1, -1, -1):
-#         for j in range(0, i):
-#             if prices[i] - prices[j] > max_profit:
-#                 max_profit = prices[i] - prices[j]
-#
-#     return max_profit
-#
-# my_prices = [100, 55, 4, 98, 10, 18, 90, 95, 43, 11, 47, 67, 89, 42, 49, 79]
-# find_max_profit(my_prices)
-# """
-#
-# second_test = """
-# def find_max_profit_skip(prices):
-#     max_profit = -float('inf')
-#     for i in range(len(prices) - 1, -1, -1):
-#         if prices[i] >= max_profit:
-#             for j in range(0, i):
-#                 if prices[i] - prices[j] > max_profit:
-#                     max_profit = prices[i] - prices[j]
-#
-#     return max_profit
-#
-# my_prices = [100, 55, 4, 98, 10, 18, 90, 95, 43, 11, 47, 67, 89, 42, 49, 79]
-# find_max_profit_skip(my_prices)
-# """
-# print(timeit.timeit(first_test, number=100)/100)
-# print(timeit.timeit(second_test, number=100)/100)
+def find_max_profit_linear(prices):
+    current_min = float('inf')
+    current_max_profit = -float('inf')
+    for p in prices:
+        if p - current_min > current_max_profit:
+            current_max_profit = p - current_min
+        if p < current_min:
+            current_min = p
+    return current_max_profit
+
+
+first_test = """
+import random
+
+
+def find_max_profit(prices):
+    max_profit = -float('inf')
+    for i in range(len(prices) - 1, -1, -1):
+        for j in range(0, i):
+            if prices[i] - prices[j] > max_profit:
+                max_profit = prices[i] - prices[j]
+
+    return max_profit
+
+find_max_profit(random.sample(range(0, 10000), 1000))
+"""
+
+second_test = """
+
+import random
+
+
+def find_max_profit_skip(prices):
+    max_profit = -float('inf')
+    for i in range(len(prices) - 1, -1, -1):
+        if prices[i] >= max_profit:
+            for j in range(0, i):
+                if prices[i] - prices[j] > max_profit:
+                    max_profit = prices[i] - prices[j]
+
+    return max_profit
+
+find_max_profit_skip(random.sample(range(0, 10000), 1000))
+"""
+
+third_test = """
+import random
+
+def find_max_profit_linear(prices):
+    current_min = float('inf')
+    current_max_profit = -float('inf')
+    for p in prices:
+        if p - current_min > current_max_profit:
+            current_max_profit = p - current_min
+        if p < current_min:
+            current_min = p
+    return current_max_profit
+    
+
+find_max_profit_linear(random.sample(range(0, 10000), 1000))
+"""
+
+first_sum = 0
+second_sum = 0
+third_sum = 0
+
+for i in range(100):
+    first_sum += timeit.timeit(first_test, number=100) / 100
+    second_sum += timeit.timeit(second_test, number=100) / 100
+    third_sum += timeit.timeit(third_test, number=100) / 100
+
+
+print(f"First: {first_sum / 100}")
+print(f"Second: {second_sum / 100}")
+print(f"Third: {third_sum / 100}")
+
+# results from above test, took about 15 minutes to run
+# First: 0.006794132146539994
+# Second: 0.0002013778457999989
+# Third: 0.00010037239724000194
 
 if __name__ == '__main__':
     # This is just some code to accept inputs from the command line
