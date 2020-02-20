@@ -7,17 +7,12 @@ import sys
 # a solution that is more efficient than the naive 
 # recursive solution
 def eating_cookies(n, cache=None):
-    if n == 0:
-        return 1
-    if n == 1:
-        return 1
-    if n == 2:
-        return 2
-    if n == 3:
-        return 4
-    return eating_cookies(n - 1) + eating_cookies(n - 2) + eating_cookies(n - 3)
+    base_case = [1, 1, 2, 4]
 
+    for i in range(4, n + 1):
+        base_case.append(base_case[i - 1] + base_case[i - 2] + base_case[i - 3])
 
+    return base_case[n]
 
 
 if __name__ == "__main__":
